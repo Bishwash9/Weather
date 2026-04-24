@@ -94,7 +94,7 @@ export const WeatherPage = () => {
                                 <h2 className="text-3xl font-bold text-indigo-800 tracking-tight">
                                     {currentWeather.location.name}
                                 </h2>
-                                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">{currentWeather.location.country}</p>
+                                <p className="text-xs font-semibold text-blue-300 uppercase tracking-widest">{currentWeather.location.country}</p>
                                 
                                 <div className="flex items-center justify-center my-4">
                                     <img src={`https:${currentWeather.current.condition.icon}`} className="w-28 h-28 drop-shadow-2xl" alt="icon" />
