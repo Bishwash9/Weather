@@ -12,5 +12,8 @@ export const WeatherService = {
     },
     getHistory: async (city: string, date: string) => {
         return await apiClient(`/history.json?q=${city}&dt=${date}`);
+    },
+    getHistoryRange: async (city: string, from: string, to: string) => {
+        return await apiClient(`/history.json?q=${city}&dt=${from}&end_dt=${to}`);
     }
 }
