@@ -56,124 +56,114 @@ export const WeatherPage = () => {
 
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-blue-50 p-4">
-           <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl p-6">
+        <div className="relative min-h-screen w-full flex items-center justify-center p-4 overflow-hidden bg-sky-100">
+            
+            {/* --- LIQUID BLOBS (The Background) --- */}
+            <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-blob"></div>
+            <div className="absolute top-[20%] right-[-5%] w-80 h-80 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-2000"></div>
+            <div className="absolute bottom-[-10%] left-[20%] w-96 h-96 bg-pink-300 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-4000"></div>
 
-
-                <div className="p-6 ">
-                    <div className="flex gap-2">
+            {/* --- MAIN GLASS CARD --- */}
+            <div className="relative z-10 w-full max-w-xl bg-white/10 backdrop-blur-3xl rounded-[40px] border border-white/30 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)] overflow-hidden">
+                
+                {/* Glass Search Bar */}
+                <div className="p-8 pb-0">
+                    <div className="flex gap-3 bg-white/10 p-2 rounded-2xl border border-white/20">
                         <input
                             type="text"
                             placeholder="Enter city name..."
-                            className="w-full p-3 rounded-lg outline-none focus:ring-2 focus:ring-blue-300"
+                            className="bg-transparent flex-1 p-2 text-gray-800 placeholder-gray-400 outline-none"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleSearch(city)}
                         />
                         <button
                             onClick={() => handleSearch(city)}
-                            className="bg-white text-blue-600 px-6 py-2 rounded-lg font-bold hover:bg-blue-50 transition"
+                            className="bg-white/40 backdrop-blur-md px-6 py-2 rounded-xl text-blue-600 font-bold hover:bg-white/60 transition shadow-sm"
                         >
                             {loading ? "..." : "Search"}
                         </button>
                     </div>
                 </div>
 
-                {currentWeather && (
-                    <div className="p-6">
-
-                        <div className="text-center mb-8">
-                            <h1 className="text-2xl font-bold text-gray-800">
-                                {currentWeather.location.name}, {currentWeather.location.country}
-                            </h1>
-                            <div className="flex items-center justify-center my-4">
-                                <img
-                                    src={`https:${currentWeather.current.condition.icon}`}
-                                    className="w-24 h-24"
-                                    alt="condition"
-                                />
-                                <span className="text-6xl font-black text-blue-600">
+                {currentWeather ? (
+                    <div className="p-8">
+                        {/* Current Weather Info */}
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-800 tracking-tight">
+                                {currentWeather.location.name}
+                            </h2>
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{currentWeather.location.country}</p>
+                            
+                            <div className="flex items-center justify-center my-6">
+                                <img src={`https:${currentWeather.current.condition.icon}`} className="w-28 h-28 drop-shadow-2xl" alt="icon" />
+                                <span className="text-7xl font-bold text-blue-600 drop-shadow-sm leading-none ml-2">
                                     {currentWeather.current.temp_c}°
                                 </span>
                             </div>
-                            <p className="text-gray-500 text-lg capitalize">
+                            <p className="text-gray-600 font-medium capitalize text-lg">
                                 {currentWeather.current.condition.text}
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 bg-blue-50 p-4 rounded-xl mb-8 text-center text-sm font-medium">
-                            <div>
-                                <p className="text-gray-400">HUMIDITY</p>
-                                <p className="text-blue-800">{currentWeather.current.humidity}%</p>
+                        {/* Liquid Stats Box */}
+                        <div className="grid grid-cols-2 gap-4 bg-white/20 backdrop-blur-md border border-white/30 p-6 rounded-[30px] mb-8">
+                            <div className="text-center">
+                                <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 uppercase">HUMIDITY</p>
+                                <p className="text-2xl font-bold text-blue-800">{currentWeather.current.humidity}%</p>
                             </div>
-                            <div>
-                                <p className="text-gray-400">WIND</p>
-                                <p className="text-blue-800">{currentWeather.current.wind_kph} km/h</p>
+                            <div className="text-center border-l border-white/20">
+                                <p className="text-[10px] font-bold text-gray-400 tracking-widest mb-1 uppercase">WIND</p>
+                                <p className="text-2xl font-bold text-blue-800">{currentWeather.current.wind_kph} <small className="text-xs">km/h</small></p>
                             </div>
                         </div>
 
-                        <div className="m-2">
-                            <h3 className="text-lg font-bold text-gray-700 mb-4 pb-2">
-                                Last 7 Days Trends
-                            </h3>
-                            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide py-2">
-                                {historyData.map((day) => (
-                                    <div
-                                        key={day.date}
-                                        className="shrink-0 w-32 p-4 bg-gray-50 rounded-xl flex flex-col items-center justify-center border border-gray-100 hover:shadow-md transition"
-                                    >
-
-                                        <span className="font-bold text-gray-700 text-xs text-center mb-3">
-                                            {new Date(day.date).toLocaleDateString("en-US", { weekday: 'short', month: 'long', day: 'numeric' })}
-                                        </span>
-                                        <span className="text-[9px] text-center text-nowrap text-gray-400">{day.day.condition.text}</span>
-
-                                        <div className="flex items-center gap-4">
-                                            <img src={`https:${day.day.condition.icon}`} className="w-10 h-10" alt="icon" />
-                                            <div className="text-right">
-                                                <p className="font-bold text-blue-600">{day.day.avgtemp_c}°</p>
-
-                                            </div>
+                        {/* History Horizontal Row */}
+                        {historyData.length > 0 && (
+                            <div className="mb-8 pl-1">
+                                <h3 className="text-sm font-bold text-gray-700 mb-4 border-b border-white/20 pb-2">Past Trends</h3>
+                                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                                    {historyData.map((day) => (
+                                        <div key={day.date} className="shrink-0 w-28 p-4 bg-white/20 backdrop-blur-xl border border-white/20 rounded-[25px] flex flex-col items-center">
+                                            <span className="text-xs font-bold text-gray-700 mb-2">
+                                                {new Date(day.date).toLocaleDateString("en-US", { weekday: 'short', day: 'numeric' })}
+                                            </span>
+                                            <img src={`https:${day.day.condition.icon}`} className="w-12 h-12" alt="icon" />
+                                            <p className="font-bold text-blue-600 text-lg">{day.day.avgtemp_c}°</p>
                                         </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                )}
-                <div className="m-4 p-4">
-                    <h3 className="text-lg font-bold text-blue-600 mb-4 pb-2">
-                        Forecast
-                    </h3>
-                    <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide py-2">
-                        {forecastData.map((day) => (
-                            <div
-                                key={day.date}
-                                className="shrink-0 w-32 p-4 bg-blue-50 rounded-xl flex flex-col items-center justify-center border border-blue-100 hover:shadow-md transition"
-                            >
-
-                                <span className="font-bold text-gray-700 text-xs text-center mb-3">
-                                    {new Date(day.date).toLocaleDateString("en-US", { weekday: 'short', month: 'long', day: 'numeric' })}
-                                </span>
-                                <span className="text-[9px] text-center text-nowrap text-gray-400">{day.day.condition.text}</span>
-
-                                <div className="flex items-center gap-4">
-                                    <img src={`https:${day.day.condition.icon}`} className="w-10 h-10" alt="icon" />
-                                    <div className="text-right">
-                                        <p className="font-bold text-blue-600">{day.day.avgtemp_c}°</p>
-
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
-                        ))}
+                        )}
+
+                        {/* Forecast Horizontal Row */}
+                        {forecastData.length > 0 && (
+                            <div className="pl-1">
+                                <h3 className="text-sm font-bold text-blue-600 mb-4 border-b border-white/20 pb-2">Upcoming Forecast</h3>
+                                <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+                                    {forecastData.map((day) => (
+                                        <div key={day.date} className="shrink-0 w-28 p-4 bg-blue-600/5 backdrop-blur-xl border border-blue-600/10 rounded-[25px] flex flex-col items-center">
+                                            <span className="text-xs font-bold text-blue-700 mb-2">
+                                                {new Date(day.date).toLocaleDateString("en-US", { weekday: 'short', day: 'numeric' })}
+                                            </span>
+                                            <img src={`https:${day.day.condition.icon}`} className="w-12 h-12" alt="icon" />
+                                            <p className="font-bold text-blue-800 text-lg">{day.day.avgtemp_c}°</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-
-
-                {loading && !currentWeather && (
-                    <div className="p-20 text-center text-gray-400">Fetching weather data...</div>
+                ) : (
+                    <div className="p-20 text-center flex flex-col items-center gap-4">
+                         <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+                         <p className="text-blue-900/40 font-black text-xs uppercase tracking-widest animate-pulse">
+                            {loading ? "Discovering Weather..." : "Search a city to start"}
+                         </p>
+                    </div>
                 )}
             </div>
         </div>
     );
+
 }
